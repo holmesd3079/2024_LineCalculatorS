@@ -4,15 +4,25 @@ from datetime import date
 import pandas
 
 
-# Yes/no checker, but it returns true for yes and false for no
+def statement_generator(statement, decoration, dec_mode=1):
+    middle = f'{decoration.upper() * 3} | {statement} | {decoration.upper() * 3}'
+    top_bottom = decoration.upper() * len(middle)
+
+    print(top_bottom)
+    print(middle if dec_mode == 1 else 6 * " " + statement)
+    print(top_bottom)
+
+
 def agree(question):
     while 1:
         reply = input(question).lower()
         if reply in {"yes", "no", "n", "y"}:
+            # all the "yes"-like answers all start with y (neutrons True)
             return reply[0] == 'y' and True or False
         print("Reply yes/no")
 
 
+# Calculate coordinates and returns a table with all formula's and calculation (Distance, Midpoint, Gradient, Equation)
 def calculate_cords(x1, y1, x2, y2):
     # Calculate all the axis to all the formula's
     distance = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
@@ -33,20 +43,25 @@ def split_values(question, max_values=4, exit_code=None, remove=("(", ")", " "))
     # Leaves loop until the values input is meeting the expected
     while True:
         response = input(question).lower()
+        # if response exit code
         if response == exit_code:
             return response
         processed_cords = []
+        # Error catching, restart if something is incorrect, ie All points are the same number or input is not a number
         try:
+            # Remove unneeded characters from string
             for remove_char in remove:
                 response = str.replace(response, remove_char, "")
+            # Turn response into table of the comma split response
             response = str.split(response, ",")
             # check if int and check if anything else than numbers if it is a string it catches the error and asks again
             for coord in response:
                 processed_cords.append(float(coord))
-
+            # Checks if it matches max values (since 2 points need 4 coordinates)
             if len(response) == max_values:
                 matches = 0
-                for i in range(4):
+                # Making sure the numbers given are all not the same
+                for i in range(max_values):
                     if processed_cords[0] == processed_cords[i]:
                         matches += 1
                 if matches == 4:
@@ -54,17 +69,19 @@ def split_values(question, max_values=4, exit_code=None, remove=("(", ")", " "))
                     continue
                 break
 
+        # Error catching - if something on the table errors (like a letter) it will notify the user
         except ValueError:
             print("Please input 2 valid coordinates\n")
             continue
+        # Tells the user if they have put in too many coordinates or too little
         print(("Not enough coordinates!" if len(response) < max_values else "To many coordinates!")
               + " please input 2 coordinates (2 coordinates == 4 values)\n")
 
     return processed_cords
 
 
-# check if the response is an integer, returns if it is
-def int_checker(question, error="Please enter a number above 0", exit_code=None):
+# Check if the response is an integer above 0, returns the integer if it is
+def int_checker(question, error="Please enter a valid number above 0", exit_code=None):
     while True:
 
         response = input(question).lower()
@@ -74,12 +91,14 @@ def int_checker(question, error="Please enter a number above 0", exit_code=None)
             response = int(response)
             if response > 0:
                 return response
+            else:
+                print("This cannot be a negative number", error)
         except ValueError:
             print(error)
 
 
-all_coordinates, distances, midpoints, gradients, equations = [], [], [], [], []
-
+# Ask user if they want to see the instructions
+statement_generator("Welcome to Line calculator!", "^", 2)
 if agree("Do you want to see the instructions"):
     print("instructions\n"
           "'xxx' to quit (during coordinate input)\n"
@@ -87,7 +106,10 @@ if agree("Do you want to see the instructions"):
           "\n - When the program asks you for your values '1,2,3,4' or (1,2), (3,4)"
           "\n - (SPACES ARE IGNORED) - comma separated")
 
-max_loops = int_checker("\nHow many questions are you going to calculate ('inf for endless')", exit_code="inf")
+all_coordinates, distances, midpoints, gradients, equations = [], [], [], [], []
+
+# Ask how many questions the user wants to calculate (inf for endless) then set the values
+max_loops = int_checker("\nHow many questions are you going to calculate ('inf for endless') ", exit_code="inf")
 max_loops = max_loops == "inf" and -1 or max_loops
 loops_count = 0
 
@@ -95,17 +117,19 @@ loops_count = 0
 while max_loops != loops_count:
     coordinate_table = []  # [x1 y2 x1 y2] format
     coordinate_response = split_values("('xxx' to quit)\n"
-                                       "Please input your Coordinates 'x, y, x, y' or (x, y), (x, y):", exit_code="xxx")
-    # If exit code is the response
+                                       "Please input your Coordinates 'x, y, x, y' or (x, y), (x, y): ", exit_code="xxx")
+
     if coordinate_response == "xxx":
-        # If loops_count is 0 (nothing) it will restart the loop, else it will exit the loop if above 0
+        # If loops_count is 0 (nothing) it will restart the loop, else it will exit the loop
         if not loops_count:
             print("You need to calculate least 1 equation before quiting!\n")
             continue
         break
 
+    # Ask user their for response then set values with their processed response
     _x1, _y1, _x2, _y2 = coordinate_response
     answer_table = calculate_cords(_x1, _y1, _x2, _y2)
+    # Print current answers
     print(
         f"\n",
         f"Coordinates:\t({_x1}, {_y1}), ({_x2},{_y2})\n",
@@ -114,6 +138,7 @@ while max_loops != loops_count:
         f"Gradient:\t{answer_table[2]}\n",
         f"Equation:\t{answer_table[3]}\n"
     )
+
     # Add all data to the tables for the dictionary
     all_coordinates.append(f"({_x1}, {_y1}), ({_x2}, {_y2})")
     distances.append(answer_table[0])
