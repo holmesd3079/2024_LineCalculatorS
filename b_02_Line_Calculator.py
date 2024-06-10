@@ -4,6 +4,7 @@ from datetime import date
 import pandas
 
 
+# Decorates the text given in surrounded characters
 def statement_generator(statement, decoration, dec_mode=1):
     middle = f'{decoration.upper() * 3} | {statement} | {decoration.upper() * 3}'
     top_bottom = decoration.upper() * len(middle)
@@ -54,7 +55,7 @@ def split_values(question, max_values=4, exit_code=None, remove=("(", ")", " "))
                 response = str.replace(response, remove_char, "")
             # Turn response into table of the comma split response
             response = str.split(response, ",")
-            # check if int and check if anything else than numbers if it is a string it catches the error and asks again
+            # Check if is int & check if anything else than numbers if it is a string it catches the error & asks again
             for coord in response:
                 processed_cords.append(float(coord))
             # Checks if it matches max values (since 2 points need 4 coordinates)
@@ -117,7 +118,8 @@ loops_count = 0
 while max_loops != loops_count:
     coordinate_table = []  # [x1 y2 x1 y2] format
     coordinate_response = split_values("('xxx' to quit)\n"
-                                       "Please input your Coordinates 'x, y, x, y' or (x, y), (x, y): ", exit_code="xxx")
+                                       "Please input your Coordinates 'x, y, x, y' or (x, y), (x, y): ",
+                                       exit_code="xxx")
 
     if coordinate_response == "xxx":
         # If loops_count is 0 (nothing) it will restart the loop, else it will exit the loop
