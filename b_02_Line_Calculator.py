@@ -8,7 +8,6 @@ import pandas
 def statement_generator(statement, decoration, dec_mode=1):
     middle = f'{decoration.upper() * 3} | {statement} | {decoration.upper() * 3}'
     top_bottom = decoration.upper() * len(middle)
-
     print(top_bottom)
     print(middle if dec_mode == 1 else 6 * " " + statement)
     print(top_bottom)
@@ -26,7 +25,7 @@ def agree(question):
 # Calculate coordinates and returns a table with all formula's and calculation (Distance, Midpoint, Gradient, Equation)
 def calculate_cords(x1, y1, x2, y2):
     # Calculate all the axis to all the formula's
-    distance = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+    distance = round(math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2), 2)
     midpoint = ((x1 + x2) / 2, (y1 + y2) / 2)
 
     # if the x equals to 0 which is not able to be calculated, instead returns undefined
@@ -100,7 +99,7 @@ def int_checker(question, error="Please enter a valid number above 0", exit_code
 
 # Ask user if they want to see the instructions
 statement_generator("Welcome to Line calculator!", "^", 2)
-if agree("Do you want to see the instructions"):
+if agree("Do you want to see the instructions "):
     print("instructions\n"
           "'xxx' to quit (during coordinate input)\n"
           "\n - Input the amount of questions you need to calculate ('inf' for endless)"
@@ -135,7 +134,7 @@ while max_loops != loops_count:
     print(
         f"\n",
         f"Coordinates:\t({_x1}, {_y1}), ({_x2},{_y2})\n",
-        f"Distance:\t{answer_table[0]:.2f}\n",
+        f"Distance:\t{answer_table[0]}\n",
         f"Midpoint:\t{answer_table[1]}\n",
         f"Gradient:\t{answer_table[2]}\n",
         f"Equation:\t{answer_table[3]}\n"
