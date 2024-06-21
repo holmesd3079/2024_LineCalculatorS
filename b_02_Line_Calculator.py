@@ -26,16 +26,18 @@ def agree(question):
 def calculate_cords(x1, y1, x2, y2):
     # Calculate all the axis to all the formula's
     distance = round(math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2), 2)
-    midpoint = ((x1 + x2) / 2, (y1 + y2) / 2)
+    midpoint = (round((x1 + x2) / 2), round((y1 + y2) / 2))
 
     # if the x equals to 0 which is not able to be calculated, instead returns undefined
+    display_gradient = round((y2 - y1) / (x2 - x1), 2) if (x2 - x1) != 0 else 'undefined'
+
     gradient = (y2 - y1) / (x2 - x1) if (x2 - x1) != 0 else 'undefined'
 
     # if the gradient isint able to be solved it will return only the x equation else the y and x together if it is.
     equation = (f"x = {x1}" if gradient == 'undefined' else f"y = {gradient:.2f}x + {y1 - gradient * x1:.2f}")
 
     # Return all the calculated data back
-    return [distance, midpoint, gradient, equation]
+    return [distance, midpoint, display_gradient, equation]
 
 
 # Used to split comma separated values into tables/arrays
@@ -110,6 +112,8 @@ all_coordinates, distances, midpoints, gradients, equations = [], [], [], [], []
 
 # Ask how many questions the user wants to calculate (inf for endless) then set the values
 max_loops = int_checker("\nHow many questions are you going to calculate ('inf for endless') ", exit_code="inf")
+# Set max_loops to -1 if it's 'inf', *or* keep its current value (which is the users inputted number)
+
 max_loops = max_loops == "inf" and -1 or max_loops
 loops_count = 0
 
